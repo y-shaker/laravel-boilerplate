@@ -17,6 +17,21 @@ class ProfileController
      */
     public function update(UpdateProfileRequest $request, UserService $userService)
     {
+        $user = auth()->user();
+
+        if ($request->hasFile('avatar')) {
+            $request->validate([
+                'avatar' => ['image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            ]);
+
+            $avatarFile = $request->file('avatar');
+            $avatarFileName = 'avatar_' . $user->id . '_' . time() . '.' . $avatarFile->getClientOriginalExtension();
+            $avatarPath = $avatarFile->storeAs('avatars', $avatarFileName, 'public');
+            
+            $user->avatar = $avatarPath;
+            $user->save();
+        }
+
         $userService->updateProfile($request->user(), $request->validated());
 
         if (session()->has('resent')) {
