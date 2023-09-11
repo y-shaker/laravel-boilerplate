@@ -28,7 +28,7 @@ trait UserAttribute
      */
     public function getAvatarAttribute()
     {
-        return $this->getAvatar();
+        return $this->attributes['avatar'];
     }
 
     /**

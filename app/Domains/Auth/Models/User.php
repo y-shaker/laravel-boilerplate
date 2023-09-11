@@ -55,6 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail, TwoFactorAuthenti
         'password',
         'password_changed_at',
         'active',
+        'avatar',
         'timezone',
         'last_login_at',
         'last_login_ip',

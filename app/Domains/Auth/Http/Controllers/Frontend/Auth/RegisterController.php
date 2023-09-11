@@ -77,6 +77,7 @@ class RegisterController
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
             'password' => array_merge(['max:100'], PasswordRules::register($data['email'] ?? null)),
             'terms' => ['required', 'in:1'],
+            'avatar' => ['nullable', 'image', 'max:2048'],
             'g-recaptcha-response' => ['required_if:captcha_status,true', new Captcha],
         ], [
             'terms.required' => __('You must accept the Terms & Conditions.'),
@@ -96,6 +97,17 @@ class RegisterController
     {
         abort_unless(config('boilerplate.access.user.registration'), 404);
 
-        return $this->userService->registerUser($data);
+        $user = $this->userService->registerUser($data);
+
+        if (request()->hasFile('avatar')) {
+            $avatarFile = request()->file('avatar');
+            $avatarFileName = 'avatar_' . $user->id . '_' . time() . '.' . $avatarFile->getClientOriginalExtension();
+            $avatarPath = $avatarFile->storeAs('avatars', $avatarFileName, 'public');
+            
+            $user->avatar = $avatarPath;
+            $user->save();
+        }
+    
+        return $user;
     }
 }
