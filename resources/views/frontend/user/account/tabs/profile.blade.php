@@ -7,7 +7,13 @@
 
         <tr>
             <th>@lang('Avatar')</th>
-            <td><img src="{{ $logged_in_user->avatar }}" class="user-profile-image" /></td>
+            <td>
+                @if($logged_in_user->avatar)
+                    <img src="{{ asset('storage/' . $logged_in_user->avatar) }}" alt="{{ $logged_in_user->name }}'s Avatar" style="width: 100px; height: 100px;">
+                @else
+                    <img src="{{ asset('https://gravatar.com/avatar/') }}" class="user-profile-image" alt="Default Avatar" />
+                @endif
+            </td>
         </tr>
 
         <tr>
